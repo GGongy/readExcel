@@ -11,27 +11,36 @@ import java.io.InputStream;
 public class JxlRead {
     public JxlRead() {}
     String str;
+    String filename;
+    int i;
+    File file = new File("G:/Java/");
+    File[] files = file.listFiles();
     /*
     * 读取 excel 文件的 A1 单元格
     * 注意读取是流的需要关闭
     * **/
-    public void getExcel(String filePath) {
-        try {
-            InputStream is = new FileInputStream(filePath);
-            Workbook wb = Workbook.getWorkbook(is);
-            Sheet sheet = wb.getSheet(0);
-            Cell cell = sheet.getCell(0,0);
-            str = cell.getContents();
-            if (cell.getType() == CellType.LABEL) {
-                LabelCell labelCell = (LabelCell)cell;
-                str = labelCell.getString();
+    public void getExcel() {
+        for (i = 0; i <files.length; i++) {
+            //System.out.println(files[i].getName());
+            try {
+                InputStream is = new FileInputStream("G:/Java/" + files[i].getName());
+                filename = files[i].getName();
+                Workbook wb = Workbook.getWorkbook(is);
+                Sheet sheet = wb.getSheet(0);
+                Cell cell = sheet.getCell(0, 0);
+                str = cell.getContents();
+                if (cell.getType() == CellType.LABEL) {
+                    LabelCell labelCell = (LabelCell) cell;
+                    str = labelCell.getString();
+                }
+                is.close();
+                renameFile("G:/Java/", filename + "", str + ".xls");
+                //System.out.println(str);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (BiffException e) {
+                e.printStackTrace();
             }
-            is.close();
-            System.out.println(str);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (BiffException e) {
-            e.printStackTrace();
         }
     }
     /*
@@ -53,7 +62,7 @@ public class JxlRead {
             // } catch (IOException e) {
             //     e.printStackTrace();
             // }
-            System.out.println(newfile + "111111");
+            //System.out.println(newfile + "111111");
             if (!oldfile.exists()) {
                 return;
             }
@@ -70,9 +79,10 @@ public class JxlRead {
 
     public static void main(String[] args) {
         JxlRead jxlRead = new JxlRead();
-        jxlRead.getExcel("G:/Java/CH0103.xls");
-        jxlRead.renameFile("G:/Java/","CH0103.xls",jxlRead.str + ".xls");
-        System.out.println(jxlRead.str + ".xls");
+        //jxlRead.getExcel("G:/Java/");
+        jxlRead.getExcel();
+        //System.out.println(jxlRead.str + ".xls");
+        //jxlRead.readFile();
     }
 
 }
